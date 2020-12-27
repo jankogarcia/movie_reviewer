@@ -33,6 +33,74 @@ const userSchema = mongoose.Schema({
     }
 });
 
+userSchema.pre('save', function(next){
+    var user = this;
+    if(user.isModified('password')){
+        bcrypt.genSalt(SALT_I, (err, salt) => {
+            if(err){
+                return next(err);
+            }
+            
+            bcrypt.hash(user.password, salt, (err, hash) => {
+                if(err){
+                    return next(err);
+                }
+
+                user.password = hash;
+                next();
+            })
+        })
+    }else{
+        next();
+    }
+});
+
+userSchema.methods.comparePassword = function(possiblePassword, callback){
+    bcrypt.compare(possiblePassword, this.password, (err, isMatch) => {
+        if(err){
+            callback(err)
+        }
+        callback(null, isMatch);
+    });
+}
+
+userSchema.methods.generateToken = function(callback){
+    var user = this;
+    var token = jwt.sign(user._id.toHexString(), config.SECRET);
+
+    user.token = token;
+    user.save(function(err, user){
+        if(err){
+            callback(err);
+        }
+
+        callback(null, user);
+    });
+}
+
+userSchema.methods.deleteToken = function(callback){
+    var user = this;
+    user.updateOne({$unset:{token:1}}, function(err, user){
+        if(err){
+            callback(err)
+        }
+
+        callback(null, user);
+    })
+}
+
+userSchema.statics.findByToken = function(token, callback){
+    var user = this;
+    jwt.verify(token, config.SECRET, function(err, decode){
+        user.findOne({_id:decode, token:token}, function(err, user){
+            if(err){
+                callback(err);
+            }
+
+            callback(null, user);
+        })
+    });
+}
 
 const User = mongoose.model('User', userSchema);
 
