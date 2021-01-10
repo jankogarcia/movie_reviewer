@@ -23,7 +23,8 @@ const postMovie = (req, res) => {
         rating: req.body.rating,
         reviewerId: req.body.user,
         actors: req.body.actors,
-        year: req.body.year
+        year: req.body.year,
+        minutes: req.body.minutes
     });
 
     movie.save((err, movie) => {

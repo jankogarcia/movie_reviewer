@@ -29,6 +29,10 @@ const movieSchema = mongoose.Schema({
     reviewerId:{
         type:String,
         required:true
+    },
+    minutes:{
+        type:Number,
+        required:true
     }
 },{timestamps:true});
 

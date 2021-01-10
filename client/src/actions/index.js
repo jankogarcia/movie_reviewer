@@ -1,4 +1,5 @@
 import axios from 'axios';
+import ReduxThunk from 'redux-thunk';
 
 export function getMoviesHome(limit=10, start=0, order='asc', movies=[]) {
     const request = axios
@@ -32,5 +33,37 @@ export function clearMovie(){
     return{
         type:'UNLOAD_MOVIE',
         payload:null
+    }
+}
+
+export function clearMovieWithReviewer(){
+    return{
+        type:'UNLOAD_MOVIE_AND_REVIEWER',
+        payload:{
+            movie: null,
+            reviewer: null
+        }
+    }
+}
+
+export function getMovieWithReviewer(id){
+    const request = axios.get(`/api/movie/${id}`)
+    return (dispatch) => {
+        request.then(({data}) => {
+            let movie = data;
+
+            axios.get(`/api/user/${movie.reviewerId}`)
+            .then(({data}) => {
+                let response = {
+                    movie,
+                    reviewer: data
+                }
+
+                dispatch({
+                    type:'GET_MOVIE_WITH_REVIEWER',
+                    payload:response
+                })
+            })            
+        })
     }
 }

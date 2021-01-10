@@ -5,6 +5,13 @@ export default function(state={}, action){
         case 'GET_MOVIE_BY_ID':
         case 'UNLOAD_MOVIE':
             return {...state, movie:action.payload}
+        case 'GET_MOVIE_WITH_REVIEWER':
+        case 'UNLOAD_MOVIE_AND_REVIEWER':
+            return {
+                ...state, 
+                movie:action.payload.movie,
+                reviewer:action.payload.reviewer
+            }
         default:
             return state;
     }
