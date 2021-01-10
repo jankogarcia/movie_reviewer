@@ -147,7 +147,7 @@ const login = (req, res) => {
             }
 
             if(!isMatch){
-                return res.status(400).json({isAuth:false, message:'Wrong password.'})
+                return res.json({isAuth:false, message:'Wrong password.'})
             }
 
             user.generateToken((err, doc) => {

@@ -3,12 +3,14 @@ import {Switch, Route} from 'react-router-dom';
 import Layout from './hoc/layout';
 import Home from './components/Home/home';
 import Movie from './components/Movies/movie';
+import Login from './containers/Admin/login';
 
 const Routes = () => {
     return(
         <Layout>
             <Switch>
                 <Route path='/' exact component={Home} />
+                <Route path='/login' exact component={Login} />
                 <Route path='/movie/:id' exact component={Movie} />
             </Switch>
         </Layout>

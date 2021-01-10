@@ -1,5 +1,4 @@
 import axios from 'axios';
-import ReduxThunk from 'redux-thunk';
 
 export function getMoviesHome(limit=10, start=0, order='asc', movies=[]) {
     const request = axios
@@ -65,5 +64,15 @@ export function getMovieWithReviewer(id){
                 })
             })            
         })
+    }
+}
+
+export function loginUser({email, password}){
+    const request = axios.post('/api/login', {email, password})
+                    .then(response => response.data)
+
+    return{
+        type:'USER_LOGIN',
+        payload:request
     }
 }
